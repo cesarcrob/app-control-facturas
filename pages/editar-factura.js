@@ -1,39 +1,68 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { createFactura } from '../lib/supabase';
+import { getFacturaById, updateFactura } from '../lib/supabase';
 
-export default function CrearFactura() {
+export default function EditarFactura() {
   const [cliente, setCliente] = useState('');
   const [celular, setCelular] = useState('');
   const [cantidad, setCantidad] = useState('');
   const [estatus, setEstatus] = useState('Pendiente');
   const [fecha, setFecha] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+  const { id } = router.query; // Captura el ID desde la URL
+
+  // Cargar datos de la factura al montar el componente
+  useEffect(() => {
+    if (id) {
+      const fetchFactura = async () => {
+        try {
+          const factura = await getFacturaById(parseInt(id));
+          if (factura) {
+            setCliente(factura.nombreCliente);
+            setCelular(factura.celular);
+            setCantidad(factura.cantidad);
+            setEstatus(factura.estatus);
+            setFecha(factura.fecha.split('T')[0]); // Formato YYYY-MM-DD
+          } else {
+            alert('Factura no encontrada.');
+            router.push('/'); // Redirige a la tabla si no encuentra la factura
+          }
+        } catch (error) {
+          console.error('Error al cargar la factura:', error);
+          alert('Ocurrió un error al cargar la factura.');
+          router.push('/'); // Redirige a la tabla si hay un error
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      fetchFactura();
+    }
+  }, [id, router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validar la fecha
+    // Validaciones básicas del formulario
     if (!fecha) {
       alert('Por favor, ingrese una fecha válida.');
       return;
     }
 
-    // Validar la cantidad
     if (isNaN(cantidad) || cantidad <= 0) {
       alert('Por favor, ingrese una cantidad válida.');
       return;
     }
 
-    // Validar el celular
     const celularRegex = /^[0-9]{10}$/;
     if (!celularRegex.test(celular)) {
       alert('Por favor, ingrese un número de celular válido (10 dígitos).');
       return;
     }
 
-    const nuevaFactura = {
-      cliente,
+    const facturaActualizada = {
+      id: parseInt(id),
+      nombreCliente: cliente,
       celular,
       cantidad: parseFloat(cantidad),
       estatus,
@@ -41,14 +70,15 @@ export default function CrearFactura() {
     };
 
     try {
-      const facturaCreada = await createFactura(nuevaFactura);
-
-      if (facturaCreada && facturaCreada.id) {
-        alert('Factura creada exitosamente.');
+      const success = await updateFactura(facturaActualizada);
+      if (success) {
+        alert('Factura actualizada exitosamente.');
         router.push('/'); // Redirige a la tabla de facturas
+      } else {
+        alert('Ocurrió un error al actualizar la factura.');
       }
     } catch (error) {
-      console.error('Error al crear la factura:', error);
+      console.error('Error al actualizar la factura:', error);
     }
   };
 
@@ -56,13 +86,13 @@ export default function CrearFactura() {
     router.push('/'); // Redirige a la tabla de facturas
   };
 
-  const handleVolverATabla = () => {
-    router.push('/'); // Redirige a la tabla de facturas
-  };
+  if (isLoading) {
+    return <p>Cargando datos de la factura...</p>;
+  }
 
   return (
     <div style={styles.container}>
-      <h1 style={styles.header}>Crear Factura</h1>
+      <h1 style={styles.header}>Editar Factura</h1>
       <form onSubmit={handleSubmit} style={styles.form}>
         <div style={styles.formGroup}>
           <label style={styles.label}>Nombre del Cliente</label>
@@ -118,13 +148,10 @@ export default function CrearFactura() {
         </div>
         <div style={styles.buttonGroup}>
           <button type="button" onClick={handleCancel} style={styles.cancelButton}>
-            Cancelar
+            Volver a Tabla
           </button>
           <button type="submit" style={styles.submitButton}>
-            Crear Factura
-          </button>
-          <button type="button" onClick={handleVolverATabla} style={styles.volverButton}>
-            Volver a Tabla
+            Guardar Cambios
           </button>
         </div>
       </form>
@@ -185,14 +212,6 @@ const styles = {
   },
   submitButton: {
     backgroundColor: '#4caf50',
-    color: 'white',
-    border: 'none',
-    padding: '10px 20px',
-    cursor: 'pointer',
-    borderRadius: '5px',
-  },
-  volverButton: {
-    backgroundColor: '#2196f3',
     color: 'white',
     border: 'none',
     padding: '10px 20px',
