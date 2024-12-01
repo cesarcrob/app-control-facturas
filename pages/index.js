@@ -44,9 +44,57 @@ export default function Home() {
         <TablaFacturas facturas={filteredFacturas} />
       </main>
       <footer style={styles.footer}>
-        Producto Integrador | Conceptualización de servicios en la nube | Profesor Miguel Gárate Kelly<br />
-        César Castellanos Robert | Código: 222958852 | Licenciatura en Desarrollo de Sistemas Web
-      </footer>
+  {/* Redes Sociales */}
+  <div style={styles.section}>
+    <h4>Redes Sociales</h4>
+    <div style={styles.iconsContainer}>
+      <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
+        <img src="/icons/facebook.png" alt="Facebook" style={styles.icon} />
+      </a>
+      <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+        <img src="/icons/instagram.png" alt="Instagram" style={styles.icon} />
+      </a>
+      <a href="https://youtube.com" target="_blank" rel="noopener noreferrer">
+        <img src="/icons/youtube.png" alt="YouTube" style={styles.icon} />
+      </a>
+    </div>
+  </div>
+
+  {/* Cloud Services */}
+  <div style={styles.section}>
+    <h4>Aprende más sobre Cloud Services:</h4>
+    <div style={styles.iconsContainer}>
+      <a href="https://aws.amazon.com" target="_blank" rel="noopener noreferrer">
+        <img src="/icons/aws.png" alt="AWS" style={styles.icon} />
+      </a>
+      <a href="https://cloud.google.com" target="_blank" rel="noopener noreferrer">
+        <img src="/icons/google.png" alt="Google Cloud" style={styles.icon} />
+      </a>
+      <a href="https://azure.microsoft.com" target="_blank" rel="noopener noreferrer">
+        <img src="/icons/azure.png" alt="Microsoft Azure" style={styles.icon} />
+      </a>
+      <a href="https://www.ibm.com/cloud" target="_blank" rel="noopener noreferrer">
+        <img src="/icons/ibm.png" alt="IBM Cloud" style={styles.icon} />
+      </a>
+      <a href="https://www.digitalocean.com" target="_blank" rel="noopener noreferrer">
+        <img src="/icons/ocean.png" alt="DigitalOcean" style={styles.icon} />
+      </a>
+      <a href="https://railway.app" target="_blank" rel="noopener noreferrer">
+        <img src="/icons/railway.png" alt="Railway" style={styles.icon} />
+      </a>
+      <a href="https://render.com" target="_blank" rel="noopener noreferrer">
+        <img src="/icons/render.png" alt="Render" style={styles.icon} />
+      </a>
+    </div>
+  </div>
+
+  {/* Información adicional */}
+<div style={styles.additionalInfo}>
+  Producto Integrador | Conceptualización de servicios en la nube | Profesor Miguel Gárate Kelly<br />
+  César Castellanos Robert | Código: 222958852 | Licenciatura en Desarrollo de Sistemas Web
+</div>
+</footer>
+
     </div>
   );
 }
@@ -90,4 +138,28 @@ const styles = {
     background: '#f0f0f0',
     textAlign: 'center',
   },
+  section: {
+    marginBottom: '1rem',
+  },
+  iconsContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    gap: '1rem',
+    marginTop: '0.5rem',
+  },
+  icon: {
+    width: '60px',
+    height: '60px',
+  }, 
+  additionalInfo: {
+    backgroundColor: '#333', // Gris oscuro
+    color: 'white',          // Texto en blanco
+    fontWeight: 'bold',      // Negritas
+    padding: '1rem',         // Espaciado interno
+    borderRadius: '5px',     // Bordes redondeados (opcional)
+    textAlign: 'center',     // Centrar el texto
+    marginTop: '1rem',       // Separación del contenido superior
+  },
+  
 };
+
